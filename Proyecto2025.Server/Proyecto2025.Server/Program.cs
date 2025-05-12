@@ -1,13 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using Proyecto2025.BD.Datos;
 using Proyecto2025.Server.Client.Pages;
 using Proyecto2025.Server.Components;
 
+// configura el Constructor de la aplicacion
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("ConnSqlServer")
+                            ?? throw new InvalidOperationException(
+                                    "El string de conexion no existe.");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+// Construccion la aplicacion
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
