@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto2025.BD.Datos.Entity
 {
+    [Index(nameof(Alpha3Code), Name = "Pais_Alpha3Code_UQ", IsUnique = true)]
     public class Pais
     {
         public int Id { get; set; } //heredar
