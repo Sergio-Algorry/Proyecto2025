@@ -11,8 +11,8 @@ using Proyecto2025.BD.Datos;
 namespace Proyecto2025.BD.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250512144251_Paises02")]
-    partial class Paises02
+    [Migration("20250519143715_Inicio")]
+    partial class Inicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,11 +45,17 @@ namespace Proyecto2025.BD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EstadoRegistro")
+                        .HasColumnType("int");
+
                     b.Property<string>("NombrePais")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Alpha3Code" }, "Pais_Alpha3Code_UQ")
+                        .IsUnique();
 
                     b.ToTable("Paises");
                 });

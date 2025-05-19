@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto2025.BD.Datos.Entity;
+using Proyecto2025.Shared.ENUM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Proyecto2025.BD.Datos
     public class AppDbContext : DbContext
     {
         public DbSet<Pais>  Paises { get; set; }
+        public DbSet<TipoEstado> TipoEstados { get; set; }
 
 
         public AppDbContext(DbContextOptions options) : base(options)
