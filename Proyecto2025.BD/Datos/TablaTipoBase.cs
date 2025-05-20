@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto2025.BD.Datos
 {
+    // #error indices
     public class TablaTipoBase : EntityBase
     {
         [Required(ErrorMessage = "El Código es obligatorio.")]

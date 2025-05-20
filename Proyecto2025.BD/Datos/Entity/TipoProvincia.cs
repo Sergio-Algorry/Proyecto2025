@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto2025.BD.Datos.Entity
 {
-    public class TipoEstado : TablaTipoBase
+    public class TipoProvincia : TablaTipoBase
     {
     }
 }

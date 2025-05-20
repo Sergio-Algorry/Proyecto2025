@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto2025.BD.Datos;
 
@@ -10,9 +11,11 @@ using Proyecto2025.BD.Datos;
 namespace Proyecto2025.BD.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250520142555_taBlaProvincia")]
+    partial class taBlaProvincia
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,49 +69,6 @@ namespace Proyecto2025.BD.Migrations
                     b.ToTable("Paises");
                 });
 
-            modelBuilder.Entity("Proyecto2025.BD.Datos.Entity.Provincia", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EstadoRegistro")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IGM_Id")
-                        .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)");
-
-                    b.Property<string>("NombreProvincia")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Observacion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PaisId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TipoProvinciaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PaisId");
-
-                    b.HasIndex("TipoProvinciaId");
-
-                    b.HasIndex(new[] { "IGM_Id" }, "Provincia_IGM_Id_UQ")
-                        .IsUnique();
-
-                    b.ToTable("Provincias");
-                });
-
             modelBuilder.Entity("Proyecto2025.BD.Datos.Entity.TipoProvincia", b =>
                 {
                     b.Property<int>("Id")
@@ -141,26 +101,7 @@ namespace Proyecto2025.BD.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoProvincias");
-                });
-
-            modelBuilder.Entity("Proyecto2025.BD.Datos.Entity.Provincia", b =>
-                {
-                    b.HasOne("Proyecto2025.BD.Datos.Entity.Pais", "Pais")
-                        .WithMany()
-                        .HasForeignKey("PaisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Proyecto2025.BD.Datos.Entity.TipoProvincia", "TipoProvincia")
-                        .WithMany()
-                        .HasForeignKey("TipoProvinciaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pais");
-
-                    b.Navigation("TipoProvincia");
+                    b.ToTable("TipoEstados");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,16 +1,22 @@
 ﻿using Proyecto2025.Shared.ENUM;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Proyecto2025.BD.Datos
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class EntityBase
     {
         public int Id { get; set; }
-        public EstadoRegistro EstadoRegistro { get; set; }
+ 
+        [Required(ErrorMessage = "El Estado del registro es obligatorio.")]
+        public EnumEstadoRegistro EstadoRegistro { get; set; } = EnumEstadoRegistro.EnGrabacion;
         public string Observacion { get; set; } = string.Empty;
     }
 }
