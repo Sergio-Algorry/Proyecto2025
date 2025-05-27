@@ -3,25 +3,27 @@ using Proyecto2025.BD.Datos;
 using Proyecto2025.Server.Client.Pages;
 using Proyecto2025.Server.Components;
 
-// configura el Constructor de la aplicacion
 var builder = WebApplication.CreateBuilder(args);
+#region configura el Constructor de la aplicacion y sus servicios
 
+builder.Services.AddControllers();
+
+//var ClaveConfig = builder.Configuration.GetValue<string>("Clave");
 var connectionString = builder.Configuration.GetConnectionString("ConnSqlServer")
                             ?? throw new InvalidOperationException(
                                     "El string de conexion no existe.");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-
+                    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+                .AddInteractiveServerComponents()
+                .AddInteractiveWebAssemblyComponents();
 
-// Construccion la aplicacion
+#endregion
+
 var app = builder.Build();
+#region Construccion la aplicacion y área de middlewares
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -45,5 +47,9 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Proyecto2025.Server.Client._Imports).Assembly);
+
+app.MapControllers();
+
+#endregion
 
 app.Run();
