@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddSwaggerGen();
+
 //var ClaveConfig = builder.Configuration.GetValue<string>("Clave");
 var connectionString = builder.Configuration.GetConnectionString("ConnSqlServer")
                             ?? throw new InvalidOperationException(
@@ -29,6 +31,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {

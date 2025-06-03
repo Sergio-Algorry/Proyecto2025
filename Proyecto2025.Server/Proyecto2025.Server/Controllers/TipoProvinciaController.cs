@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Proyecto2025.BD.Datos;
+using Proyecto2025.BD.Datos.Entity;
 
 namespace Proyecto2025.Server.Controllers
 {
@@ -6,17 +9,35 @@ namespace Proyecto2025.Server.Controllers
     [Route("api/TipoProvincia")]
     public class TipoProvinciaController : ControllerBase
     {
-        public TipoProvinciaController()
+        private readonly AppDbContext context;
+
+        public TipoProvinciaController(AppDbContext context)
         {
+            this.context = context;
         }
 
         [HttpGet]
-        public IActionResult GetTipoProvincias()
+        public async Task<ActionResult<List<TipoProvincia>>> GetTipoProvincias()
         {
-            // Aquí deberías implementar la lógica para obtener las provincias desde tu base de datos o servicio.
-            // Por ahora, retornamos un ejemplo estático.
-            var provincias = new List<string> { "pepe", "juan", "Provincia3", "otro reghistro" };
-            return Ok(provincias);
+            var tipoProvincias = await context.TipoProvincias.ToListAsync();
+            if (tipoProvincias == null)
+            {
+                return NotFound("No se encontraron tipos de provincia, VERIFICAR.");
+            }
+            if (tipoProvincias.Count == 0)
+            {
+                return Ok("No existe tipos de provincia en este momento.");
+            }
+
+            return Ok(tipoProvincias);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> Post(TipoProvincia DTO)
+        {
+            await context.TipoProvincias.AddAsync(DTO);
+            await context.SaveChangesAsync();
+            return Ok(DTO.Id);
         }
     }
 }
