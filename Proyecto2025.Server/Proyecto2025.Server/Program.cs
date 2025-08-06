@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Proyecto2025.BD.Datos;
 using Proyecto2025.Server.Client.Pages;
 using Proyecto2025.Server.Components;
+using Proyecto2025.Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 #region configura el Constructor de la aplicacion y sus servicios
