@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto2025.BD.Datos;
+using Proyecto2025.BD.Datos.Entity;
+using Proyecto2025.Repositorio.Repositorios;
 using Proyecto2025.Server.Client.Pages;
 using Proyecto2025.Server.Components;
 using Proyecto2025.Server.Controllers;
@@ -17,6 +19,8 @@ var connectionString = builder.Configuration.GetConnectionString("ConnSqlServer"
                                     "El string de conexion no existe.");
 builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IRepositorio<TipoProvincia>, Repositorio<TipoProvincia>>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

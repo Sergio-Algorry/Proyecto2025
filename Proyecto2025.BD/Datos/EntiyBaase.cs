@@ -11,10 +11,10 @@ namespace Proyecto2025.BD.Datos
     /// <summary>
     /// 
     /// </summary>
-    public class EntityBase
+    public class EntityBase : IEntityBase
     {
         public int Id { get; set; }
- 
+
         [Required(ErrorMessage = "El Estado del registro es obligatorio.")]
         public EnumEstadoRegistro EstadoRegistro { get; set; } = EnumEstadoRegistro.EnGrabacion;
         public string Observacion { get; set; } = string.Empty;

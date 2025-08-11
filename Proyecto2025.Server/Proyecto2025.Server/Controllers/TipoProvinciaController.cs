@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto2025.BD.Datos;
 using Proyecto2025.BD.Datos.Entity;
+using Proyecto2025.Repositorio.Repositorios;
 
 namespace Proyecto2025.Server.Controllers
 {
@@ -10,16 +11,20 @@ namespace Proyecto2025.Server.Controllers
     public class TipoProvinciaController : ControllerBase
     {
         private readonly AppDbContext context;
+        private readonly IRepositorio<TipoProvincia> repositorio;
 
-        public TipoProvinciaController(AppDbContext context)
+        public TipoProvinciaController(AppDbContext context,
+                                       IRepositorio<TipoProvincia> repositorio)
         {
             this.context = context;
+            this.repositorio = repositorio;
         }
 
         [HttpGet] //api/TipoProvincia
         public async Task<ActionResult<List<TipoProvincia>>> GetTipoProvincias()
         {
-            var tipoProvincias = await context.TipoProvincias.ToListAsync();
+            var tipoProvincias = await repositorio.Select();
+            //var tipoProvincias = await context.TipoProvincias.ToListAsync();
             if (tipoProvincias == null)
             {
                 return NotFound("No se encontraron tipos de provincia, VERIFICAR.");
@@ -35,7 +40,8 @@ namespace Proyecto2025.Server.Controllers
         [HttpGet("{id:int}")]  //api/TipoProvincia/5
         public async Task<ActionResult<TipoProvincia>> GetById(int id)
         {
-            var tipoProvincia = await context.TipoProvincias.FirstOrDefaultAsync(x => x.Id == id);
+            var tipoProvincia = await repositorio.SelectById(id);
+            //var tipoProvincia = await context.TipoProvincias.FirstOrDefaultAsync(x => x.Id == id);
             if (tipoProvincia is null)
             {
                 return NotFound($"No existe el tipo de provincia con el id: {id}.");
@@ -60,8 +66,9 @@ namespace Proyecto2025.Server.Controllers
         public async Task<ActionResult<int>> Post(TipoProvincia DTO)
         {
             try
-            {                
-                await context.TipoProvincias.AddAsync(DTO);
+            {     
+                await repositorio.Insert(DTO);
+                //await context.TipoProvincias.AddAsync(DTO);
                 await context.SaveChangesAsync();
                 return Ok(DTO.Id);
             }
@@ -74,17 +81,23 @@ namespace Proyecto2025.Server.Controllers
         [HttpPut("{id:int}")]  // api/TipoProvincia/6
         public async Task<ActionResult> Put(int id, TipoProvincia DTO)
         {
-            if (id != DTO.Id)
+            //if (id != DTO.Id)
+            //{
+            //    return BadRequest("Datos no validos.");
+            //}
+            //var existe = await repositorio.Existe(id);
+            //var existe = await context.TipoProvincias.AnyAsync(x => x.Id == id);
+            //if (!existe)
+            //{
+            //    return NotFound($"No existe el tipo de provincia con el id: {id}.");
+            //}
+            //context.Update(DTO);
+            //await context.SaveChangesAsync();
+            var resultado = await repositorio.Update(id, DTO);
+            if (!resultado)
             {
-                return BadRequest("Datos no validos.");
+                return BadRequest("Datos no validos o el tipo de provincia no existe.");
             }
-            var existe = await context.TipoProvincias.AnyAsync(x => x.Id == id);
-            if (!existe)
-            {
-                return NotFound($"No existe el tipo de provincia con el id: {id}.");
-            }
-            context.Update(DTO);
-            await context.SaveChangesAsync();
             return Ok($"Tipo de provincia con el id: {id} actualizado correctamente.");
         }
 

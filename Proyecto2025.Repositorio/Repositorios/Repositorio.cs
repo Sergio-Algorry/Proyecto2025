@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Proyecto2025.BD.Datos;
+using Proyecto2025.BD.Datos.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,25 +9,57 @@ using System.Threading.Tasks;
 
 namespace Proyecto2025.Repositorio.Repositorios
 {
-    internal class Repositorio : IRepositorio
+    public class Repositorio<E> : IRepositorio<E> where E : class, IEntityBase
     {
-        public int Pepe { get; set; }
-        public string Juan { get; set; }
+        private readonly AppDbContext context;
 
-        public Repositorio(int pepe, string juan)
+        public Repositorio(AppDbContext context)
         {
-            this.Pepe = pepe;
-            this.Juan = juan;
+            this.context = context;
         }
 
-        public void Mostrar()
+        public async Task<bool> Existe(int id)
         {
-            Console.WriteLine($"Pepe: {Pepe}, Juan: {Juan}");
+            bool existe = await context.Set<E>()
+                                       .AnyAsync(x => x.Id == id);
+            return existe;
         }
 
-        public int Sumar(int a, int b)
+        public async Task<List<E>> Select()
         {
-            return a + b + Pepe;
+            //var lista = await context.Paises.ToListAsync();
+            return await context.Set<E>().ToListAsync();
         }
+
+        public async Task<E?> SelectById(int id)
+        {
+            return await context.Set<E>().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<int> Insert(E entidad)
+        {
+            try
+            {
+                await context.Set<E>().AddAsync(entidad);
+                await context.SaveChangesAsync();
+                return entidad.Id;
+            }
+            catch (Exception err) { throw err; }
+        }
+
+        public async Task<bool> Update(int id, E entidad)
+        {
+            if( id != entidad.Id) return false;
+
+            var existe = await Existe(id);
+            if (!existe) return false;
+
+            try
+            {
+                context.Set<E>().Update(entidad);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception err) { throw err; }      }
     }
 }

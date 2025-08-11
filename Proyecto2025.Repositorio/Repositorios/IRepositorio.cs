@@ -1,10 +1,13 @@
-﻿namespace Proyecto2025.Repositorio.Repositorios
-{
-    internal interface IRepositorio
-    {
-        string Juan { get; set; }
-        int Pepe { get; set; }
+﻿using Proyecto2025.BD.Datos;
 
-        void Mostrar();
+namespace Proyecto2025.Repositorio.Repositorios
+{
+    public interface IRepositorio<E> where E : class, IEntityBase
+    {
+        Task<bool> Existe(int id);
+        Task<int> Insert(E entidad);
+        Task<List<E>> Select();
+        Task<E?> SelectById(int id);
+        Task<bool> Update(int id, E entidad);
     }
 }
