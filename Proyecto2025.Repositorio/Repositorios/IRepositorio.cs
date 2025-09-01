@@ -4,6 +4,7 @@ namespace Proyecto2025.Repositorio.Repositorios
 {
     public interface IRepositorio<E> where E : class, IEntityBase
     {
+        Task<bool> Delete(int id);
         Task<bool> Existe(int id);
         Task<int> Insert(E entidad);
         Task<List<E>> Select();

@@ -10,18 +10,15 @@ namespace Proyecto2025.Server.Controllers
     [Route("api/TipoProvincia")]
     public class TipoProvinciaController : ControllerBase
     {
-        private readonly AppDbContext context;
-        private readonly IRepositorio<TipoProvincia> repositorio;
+        private readonly ITipoProvinciaRepositorio repositorio;
 
-        public TipoProvinciaController(AppDbContext context,
-                                       IRepositorio<TipoProvincia> repositorio)
+        public TipoProvinciaController(ITipoProvinciaRepositorio repositorio)
         {
-            this.context = context;
             this.repositorio = repositorio;
         }
 
         [HttpGet] //api/TipoProvincia
-        public async Task<ActionResult<List<TipoProvincia>>> GetTipoProvincias()
+        public async Task<ActionResult<List<TipoProvincia>>> Get()
         {
             var tipoProvincias = await repositorio.Select();
             //var tipoProvincias = await context.TipoProvincias.ToListAsync();
@@ -38,7 +35,7 @@ namespace Proyecto2025.Server.Controllers
         }
 
         [HttpGet("{id:int}")]  //api/TipoProvincia/5
-        public async Task<ActionResult<TipoProvincia>> GetById(int id)
+        public async Task<ActionResult<TipoProvincia>> Get(int id)
         {
             var tipoProvincia = await repositorio.SelectById(id);
             //var tipoProvincia = await context.TipoProvincias.FirstOrDefaultAsync(x => x.Id == id);
@@ -50,16 +47,16 @@ namespace Proyecto2025.Server.Controllers
             return Ok(tipoProvincia);
         }
 
-        [HttpGet("{cod}")]  //api/TipoProvincia/PRU
-        public async Task<ActionResult<TipoProvincia>> GetByCod(string cod)
+        [HttpGet("bycod/{cod}")]  //api/TipoProvincia/PRU
+        public async Task<ActionResult<TipoProvincia>> Get(string cod)
         {
-            var tipoProvincia = await context.TipoProvincias.FirstOrDefaultAsync(x => x.Codigo == cod);
-            if (tipoProvincia is null)
+            var entidad = repositorio.SelectByCod(cod);
+            if (entidad is null)
             {
-                return NotFound($"No existe el tipo de provincia con el codigo: {cod}.");
+                return NotFound($"No existe el registro con el codigo: {cod}.");
             }
 
-            return Ok(tipoProvincia);
+            return Ok(entidad);
         }
 
         [HttpPost]
@@ -69,7 +66,7 @@ namespace Proyecto2025.Server.Controllers
             {     
                 await repositorio.Insert(DTO);
                 //await context.TipoProvincias.AddAsync(DTO);
-                await context.SaveChangesAsync();
+                //await context.SaveChangesAsync();
                 return Ok(DTO.Id);
             }
             catch (Exception e)
@@ -109,14 +106,20 @@ namespace Proyecto2025.Server.Controllers
             //{
             //    return NotFound($"No existe el tipo de provincia con el id: {id}.");
             //}
-            var tipoProvincia = await context.TipoProvincias.FirstOrDefaultAsync(x => x.Id == id);
-            if(tipoProvincia is null)
+            //var tipoProvincia = await context.TipoProvincias.FirstOrDefaultAsync(x => x.Id == id);
+            //if (tipoProvincia is null)
+            //{
+            //    return NotFound($"No existe el tipo de provincia con el id: {id}.");
+            //}
+            //context.TipoProvincias.Remove(tipoProvincia);
+            //await context.SaveChangesAsync();
+            var flag = await repositorio.Delete(id);
+            if (!flag)
             {
-                return NotFound($"No existe el tipo de provincia con el id: {id}.");
+                return NotFound($"No existe el registro con el id: {id} o ya fue eliminado.");
             }
-            context.TipoProvincias.Remove(tipoProvincia);
-            await context.SaveChangesAsync();
-            return Ok($"Tipo de provincia con el id: {id} eliminado correctamente.");
+
+            return Ok($"Registro con el id: {id} eliminado correctamente.");
         }
     }
 }

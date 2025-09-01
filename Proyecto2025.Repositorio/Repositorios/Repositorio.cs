@@ -61,5 +61,18 @@ namespace Proyecto2025.Repositorio.Repositorios
                 return true;
             }
             catch (Exception err) { throw err; }      }
+
+        public async Task<bool> Delete(int id)
+        {
+            var entidad = await SelectById(id);
+            if (entidad is null) return false;
+            try
+            {
+                context.Set<E>().Remove(entidad);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception err) { throw err; }
+        }
     }
 }

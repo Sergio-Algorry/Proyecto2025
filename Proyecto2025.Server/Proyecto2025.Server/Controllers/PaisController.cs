@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto2025.BD.Datos;
 using Proyecto2025.BD.Datos.Entity;
+using Proyecto2025.Repositorio.Repositorios;
+using Proyecto2025.Shared.DTO;
+using Proyecto2025.Shared.ENUM;
 
 namespace Proyecto2025.Server.Controllers
 {
@@ -9,17 +12,33 @@ namespace Proyecto2025.Server.Controllers
     [Route("api/Pais")]
     public class PaisController : ControllerBase
     {
-        private readonly AppDbContext context;
+        private readonly IPaisRepositorio repositorio;
 
-        public PaisController(AppDbContext context)
+        public PaisController(IPaisRepositorio repositorio)
         {
-            this.context = context;
+            this.repositorio = repositorio;
         }
 
         [HttpGet] //api/Pais
         public async Task<ActionResult<List<Pais>>> GetFull()
         {
-            var lista = await context.Paises.ToListAsync();
+            var lista = await repositorio.Select();
+            if (lista == null)
+            {
+                return NotFound("No se encontro elementos de la lista, VERIFICAR.");
+            }
+            if (lista.Count == 0)
+            {
+                return Ok("Lista sin registros.");
+            }
+
+            return Ok(lista);
+        }
+
+        [HttpGet("listapais")] //api/listapais
+        public async Task<ActionResult<List<PaisListadoDTO>>> ListaPais()
+        {
+            var lista = await repositorio.SelectListaPais();
             if (lista == null)
             {
                 return NotFound("No se encontro elementos de la lista, VERIFICAR.");
@@ -35,7 +54,7 @@ namespace Proyecto2025.Server.Controllers
         [HttpGet("{id:int}")]  //api/Pais/5
         public async Task<ActionResult<Pais>> GetById(int id)
         {
-            var entidad = await context.Paises.FirstOrDefaultAsync(x => x.Id == id);
+            var entidad = await repositorio.SelectById(id);
             if (entidad is null)
             {
                 return NotFound($"No existe el registro con id: {id}.");
@@ -47,7 +66,7 @@ namespace Proyecto2025.Server.Controllers
         [HttpGet("GetByAlpha3Code/{cod}")] // api/Pais/GetByAlpha3Code/ARG 
         public async Task<ActionResult<Pais>> GetByAlpha3Code(string cod)
         {
-            var entidad = await context.Paises.FirstOrDefaultAsync(x => x.Alpha3Code == cod);
+            var entidad = await repositorio.SelectByAlpha3Code(cod);
             if (entidad is null)
             {
                 return NotFound($"No existe registro con el codigo: {cod}.");
@@ -59,7 +78,7 @@ namespace Proyecto2025.Server.Controllers
         [HttpGet("GetByCodIndec/{cod}")] // api/Pais/GetByCodIndec/ARG
         public async Task<ActionResult<Pais>> GetByCodIndec(string cod)
         {
-            var entidad = await context.Paises.FirstOrDefaultAsync(x => x.CodIndec == cod);
+            var entidad = await repositorio.SelectByCodIndec(cod);
             if (entidad is null)
             {
                 return NotFound($"No existe registro con el codigo: {cod}.");
@@ -69,13 +88,22 @@ namespace Proyecto2025.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Post(Pais DTO)
+        public async Task<ActionResult<int>> Post(PaisDTO DTO)
         {
             try
             {                
-                await context.Paises.AddAsync(DTO);
-                await context.SaveChangesAsync();
-                return Ok(DTO.Id);
+                Pais entidad = new Pais
+                {
+                    NombrePais = DTO.NombrePais,
+                    CodIndec = DTO.CodIndec,
+                    CodLlamada = DTO.CodLlamada,
+                    Alpha3Code = DTO.Alpha3Code,
+                    EstadoRegistro = EnumEstadoRegistro.activo
+                };
+
+
+                var id = await repositorio.Insert(entidad);
+                return Ok(entidad.Id);
             }
             catch (Exception e)
             {
@@ -86,35 +114,23 @@ namespace Proyecto2025.Server.Controllers
         [HttpPut("{id:int}")]  // api/Pais/6
         public async Task<ActionResult> Put(int id, Pais DTO)
         {
-            if (id != DTO.Id)
+            var flag = await repositorio.Update(id, DTO);
+            if (!flag)
             {
-                return BadRequest("Datos no validos.");
+                return BadRequest("Datos no validos o el registro no existe.");
             }
-            var existe = await context.Paises.AnyAsync(x => x.Id == id);
-            if (!existe)
-            {
-                return NotFound($"No existe el registro con el id: {id}.");
-            }
-            context.Update(DTO);
-            await context.SaveChangesAsync();
             return Ok($"Registro con el id: {id} actualizado correctamente.");
         }
 
         [HttpDelete("{id:int}")]  // api/Pais/6
         public async Task<ActionResult> Delete(int id)
         {
-            //var existe = await context.Paises.AnyAsync(x => x.Id == id);
-            //if (existe == false)
-            //{
-            //    return NotFound($"No existe el tipo de provincia con el id: {id}.");
-            //}
-            var tipoProvincia = await context.Paises.FirstOrDefaultAsync(x => x.Id == id);
-            if(tipoProvincia is null)
+            var flag = await repositorio.Delete(id);
+            if (!flag)
             {
-                return NotFound($"No existe el registro con el id: {id}.");
+                return NotFound($"No existe el registro con el id: {id} o ya fue eliminado.");
             }
-            context.Paises.Remove(tipoProvincia);
-            await context.SaveChangesAsync();
+
             return Ok($"Registro con el id: {id} eliminado correctamente.");
         }
     }
