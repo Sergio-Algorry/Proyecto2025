@@ -22,6 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ITipoProvinciaRepositorio, TipoProvinciaRepositorio>();
 builder.Services.AddScoped<IPaisRepositorio, PaisRepositorio>();
+builder.Services.AddScoped<IProvinciaRepositorio, ProvinciaRepositorio>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

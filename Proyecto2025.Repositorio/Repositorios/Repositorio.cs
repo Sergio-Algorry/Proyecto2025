@@ -60,7 +60,7 @@ namespace Proyecto2025.Repositorio.Repositorios
                 await context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception err) { throw err; }      }
+            catch (Exception? err) { throw; }      }
 
         public async Task<bool> Delete(int id)
         {
