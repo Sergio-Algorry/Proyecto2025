@@ -36,7 +36,7 @@ namespace Proyecto2025.Repositorio.Repositorios
                                     .Select(p => new PaisListadoDTO
                                     {
                                         Id = p.Id,
-                                        Pais = $"{p.CodIndec} - { p.NombrePais} ({p.CodLlamada})"
+                                        DatosPais = $"{p.CodIndec} - { p.NombrePais} ({p.CodLlamada})"
                                     })
                                     .ToListAsync();
             return lista;

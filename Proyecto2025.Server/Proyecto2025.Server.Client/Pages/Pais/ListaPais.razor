@@ -1,0 +1,39 @@
+﻿@page "/paises"
+<h3>Lista de Paises</h3>
+<table>
+    <tr>
+        <th>Paises</th>
+    </tr>
+    @if (paises == null)
+    {
+        <p>Buscando ....</p>
+    }
+    else if (paises.Count == 0)
+    {
+        <p>No existen paises cargados en esta lista</p>
+    }
+    else
+    {
+        @foreach (var pais in paises)
+        {
+            <tr>
+                <td>@pais.DatosPais</td>
+            </tr>
+        }
+    }
+</table>
+
+@code {
+    List<PaisListadoDTO> paises;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerPaises();
+    }
+
+    private async Task LeerPaises()
+    {
+        // paises = await http.GetFromJsonAsync<List<PaisListadoDTO>>("api/Pais/listapais");
+    }
+}

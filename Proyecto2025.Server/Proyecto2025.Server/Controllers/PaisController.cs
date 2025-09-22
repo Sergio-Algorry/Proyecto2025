@@ -35,7 +35,7 @@ namespace Proyecto2025.Server.Controllers
             return Ok(lista);
         }
 
-        [HttpGet("listapais")] //api/listapais
+        [HttpGet("listapais")] //api/Pais/listapais
         public async Task<ActionResult<List<PaisListadoDTO>>> ListaPais()
         {
             var lista = await repositorio.SelectListaPais();
