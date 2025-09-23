@@ -28,7 +28,8 @@ builder.Services.AddScoped<IProvinciaRepositorio, ProvinciaRepositorio>();
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
-
+builder.Services.AddServerSideBlazor()
+      .AddCircuitOptions(options => { options.DetailedErrors = true; });
 #endregion
 
 var app = builder.Build();

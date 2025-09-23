@@ -11,5 +11,6 @@ namespace Proyecto2025.BD.Datos.Entity
     [Index(nameof(Codigo), Name = "TipoProvincia_UQ", IsUnique = true)]
     public class TipoProvincia : TablaTipoBase
     {
+
     }
 }
