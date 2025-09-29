@@ -1,5 +1,5 @@
 ﻿@page "/paises"
-@inject HttpClient http
+@inject IHttpServicio http
 <h3>Lista de Paises</h3>
 <table>
     <tr>
@@ -26,6 +26,7 @@
 
 @code {
     List<PaisListadoDTO>? paises;
+    string Mensaje = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +36,16 @@
 
     private async Task LeerPaises()
     {
-        paises = await http.GetFromJsonAsync<List<PaisListadoDTO>>("api/Pais/listapais");
+        // paises = await http.GetFromJsonAsync<List<PaisListadoDTO>>("api/Pais/listapais");
+        var resp = await http.Get<List<PaisListadoDTO>>("api/Pais/listapais");
+        if(!resp.Error)
+        {
+            paises = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = resp.ObtenerError();
+        }
     }
 
 }
