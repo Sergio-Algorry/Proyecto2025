@@ -1,0 +1,66 @@
+﻿@page "/paises/crear"
+@inject IHttpServicio http
+@inject NavigationManager navHttp
+
+<h3>Crear Nuevo Pais</h3>
+
+<EditForm Model="pais" OnValidSubmit="Grabar">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Alpha3Code</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@pais.Alpha3Code" />
+            <ValidationMessage For="@(() => pais.Alpha3Code)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Código de Indec</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@pais.CodIndec" />
+            <ValidationMessage For="@(() => pais.CodIndec)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Código de Indec</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@pais.CodLlamada" />
+            <ValidationMessage For="@(() => pais.CodLlamada)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Código de Indec</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@pais.NombrePais" />
+            <ValidationMessage For="@(() => pais.NombrePais)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Aceptar</button>
+</EditForm>
+<button class="btn btn-primary" type="button" @onclik="Cancelar">Cancelar</button>
+
+
+@code {
+    private PaisDTO pais = new PaisDTO();
+
+    private async Task Grabar()
+    {
+        var httpResp = await http.Post<PaisDTO, int>("api/Pais", pais);
+        if(!httpResp.Error)
+        {
+            navHttp.NavigateTo("/paises");
+        }
+        else
+        {
+            var body = await httpResp.HttpResponseMessage.Content.ReadAsStringAsync();
+        }
+    }
+
+    private void Cancelar()
+    {
+        navHttp.NavigateTo("/paises");
+    }
+}
