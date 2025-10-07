@@ -22,11 +22,24 @@
         {
             <tr>
                 <td>@pais.DatosPais</td>
+                <td>
+                    <a class="btn btn-primary" 
+                       href="/paises/editar/{pais.Id}">
+                       Editar
+                   </a>
+                </td>
+                <td>
+                    <button class="btn btn-danger"
+                            @onclick="() => Borrar(pais)">
+                        Borrar
+                    </button>
+                </td>
             </tr>
         }
     }
 </table>
-
+<br />
+<p>@Mensaje</p>
 @code {
     List<PaisListadoDTO>? paises;
     string Mensaje = "";
@@ -40,7 +53,7 @@
     private async Task LeerPaises()
     {
         // paises = await http.GetFromJsonAsync<List<PaisListadoDTO>>("api/Pais/listapais");
-        var resp = await http.Get<List<PaisListadoDTO>>("api/Pais/listapais");
+        var resp = await http.Get<List<PaisListadoDTO>>("api/pais/listapais");
         if(!resp.Error)
         {
             paises = resp.Respuesta;
@@ -49,6 +62,16 @@
         {
             Mensaje = resp.ObtenerError();
         }
+    }
+
+    private async Task Borrar(PaisListadoDTO pais)
+    {
+        var resp = await http.Delete($"api/pais/{pais.Id}");
+        if(resp.Error)
+        {
+            Mensaje = resp.ObtenerError();
+        }
+        await LeerPaises();
     }
 
 }

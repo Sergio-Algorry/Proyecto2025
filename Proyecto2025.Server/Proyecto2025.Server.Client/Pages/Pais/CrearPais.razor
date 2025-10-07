@@ -13,7 +13,7 @@
             <ValidationMessage For="@(() => pais.Alpha3Code)" />
         </div>
     </div>
-
+    <br />
     <div class="form-group">
         <label>Código de Indec</label>
         <div>
@@ -21,41 +21,46 @@
             <ValidationMessage For="@(() => pais.CodIndec)" />
         </div>
     </div>
-
+    <br />
     <div class="form-group">
-        <label>Código de Indec</label>
+        <label>Código de llamada Internacional</label>
         <div>
             <InputText class="form-control" @bind-Value="@pais.CodLlamada" />
             <ValidationMessage For="@(() => pais.CodLlamada)" />
         </div>
     </div>
-
+    <br />
     <div class="form-group">
-        <label>Código de Indec</label>
+        <label>Nombre del País</label>
         <div>
             <InputText class="form-control" @bind-Value="@pais.NombrePais" />
             <ValidationMessage For="@(() => pais.NombrePais)" />
         </div>
     </div>
-
+    <br />
     <button class="btn btn-primary" type="submit">Aceptar</button>
+    <button class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
 </EditForm>
-<button class="btn btn-primary" type="button" @onclik="Cancelar">Cancelar</button>
+<br />
+<p>@Mensaje</p>
+
+
 
 
 @code {
     private PaisDTO pais = new PaisDTO();
+    string Mensaje = "";
 
     private async Task Grabar()
     {
-        var httpResp = await http.Post<PaisDTO, int>("api/Pais", pais);
-        if(!httpResp.Error)
+        var httpResp = await http.Post<PaisDTO, int>("api/pais", pais);
+        if (!httpResp.Error)
         {
             navHttp.NavigateTo("/paises");
         }
         else
         {
-            var body = await httpResp.HttpResponseMessage.Content.ReadAsStringAsync();
+            Mensaje = httpResp.ObtenerError();
         }
     }
 

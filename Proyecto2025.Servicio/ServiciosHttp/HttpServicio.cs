@@ -45,6 +45,14 @@ namespace Proyecto2025.Servicio.ServiciosHttp
 
         }
 
+        public async Task<HttpRespuesta<object>> Delete(string url)
+        {
+            var respuesta = await http.DeleteAsync(url);
+            return new HttpRespuesta<object>(null, 
+                                             !respuesta.IsSuccessStatusCode, 
+                                             respuesta);
+        }
+
         private async Task<T?> DesSerializar<T>(HttpResponseMessage response)
         {
             var respStr = await response.Content.ReadAsStringAsync();

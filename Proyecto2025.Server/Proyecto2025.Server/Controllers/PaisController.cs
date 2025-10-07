@@ -9,7 +9,7 @@ using Proyecto2025.Shared.ENUM;
 namespace Proyecto2025.Server.Controllers
 {
     [ApiController]
-    [Route("api/Pais")]
+    [Route("api/pais")]
     public class PaisController : ControllerBase
     {
         private readonly IPaisRepositorio repositorio;
