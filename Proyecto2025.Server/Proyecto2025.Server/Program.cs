@@ -5,9 +5,14 @@ using Proyecto2025.Repositorio.Repositorios;
 using Proyecto2025.Server.Client.Pages;
 using Proyecto2025.Server.Components;
 using Proyecto2025.Server.Controllers;
+using Proyecto2025.Servicio.ServiciosHttp;
 
 var builder = WebApplication.CreateBuilder(args);
 #region configura el Constructor de la aplicacion y sus servicios
+
+builder.Services.AddScoped(sp => 
+    new HttpClient { BaseAddress = new Uri("https://localhost:7206") });
+builder.Services.AddScoped<IHttpServicio, HttpServicio>();
 
 builder.Services.AddControllers();
 

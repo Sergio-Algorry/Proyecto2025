@@ -30,8 +30,8 @@
                 </td>
                 <td>
                     <button class="btn btn-danger"
-                            @onclick="() => Borrar(pais)">
-                        Borrar
+                            @onclick="() => Eliminar(pais)">
+                        Eliminar
                     </button>
                 </td>
             </tr>
@@ -40,9 +40,25 @@
 </table>
 <br />
 <p>@Mensaje</p>
+<br />
+
+<Confirmacion @ref="confirmacion" 
+              Titulo="Cuidado"
+              textOk="Aceptar"
+              textCancelar="No borrar"
+              onConfirm = "Borrar"
+              onCancel="Cancelar">
+    <p>Está por Borrar un pais.</p>
+    <br />
+    <p>¿Está seguro?</p>
+</Confirmacion>
+
+
 @code {
     List<PaisListadoDTO>? paises;
     string Mensaje = "";
+    Confirmacion confirmacion;
+    PaisListadoDTO paisSeleccionado = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,14 +80,28 @@
         }
     }
 
-    private async Task Borrar(PaisListadoDTO pais)
+    private async Task Borrar()
     {
-        var resp = await http.Delete($"api/pais/{pais.Id}");
+        var resp = await http.Delete($"api/pais/{paisSeleccionado.Id}");
         if(resp.Error)
         {
             Mensaje = resp.ObtenerError();
         }
+        paisSeleccionado = null;
+        confirmacion.Ocultar();
         await LeerPaises();
     }
+
+    private async Task Eliminar(PaisListadoDTO pais)
+    {
+        paisSeleccionado = pais;
+        confirmacion.Ver();
+    }
+
+    private void Cancelar()
+    {
+        confirmacion.Ocultar();
+        paisSeleccionado = null;
+    }   
 
 }
